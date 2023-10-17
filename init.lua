@@ -10,10 +10,6 @@ require("packer").startup(function(use)
         'nvim-telescope/telescope.nvim', tag = '0.1.1',
         requires = { { 'nvim-lua/plenary.nvim' } }
     }
-    use {
-        'nvim-lualine/lualine.nvim',
-        requires = { 'kyazdani42/nvim-web-devicons', opt = true }
-    }
     use { "fatih/vim-go" }
     use {
         'VonHeikemen/lsp-zero.nvim',
@@ -47,9 +43,11 @@ require("packer").startup(function(use)
                 require("telescope").load_extension("lazygit")
             end,
         }),
+        use "windwp/windline.nvim",
         use { "akinsho/toggleterm.nvim", tag = '*' },
         use { 'akinsho/bufferline.nvim', tag = '*' },
         use "terrortylor/nvim-comment",
+        use "lewis6991/gitsigns.nvim",
     }
 end)
 
@@ -138,18 +136,6 @@ require 'nvim-treesitter.configs'.setup {
     }
 }
 
--- LUALINE
---
-require("lualine").setup {
-    options = {
-        tabline = {
-            lualine_a = { 'buffers' }
-        },
-        icons_enabled = false,
-        theme = "tokyonight",
-    },
-}
-
 -- LSP
 --
 local lsp = require("lsp-zero")
@@ -167,7 +153,7 @@ lsp.set_preferences({
     sign_icons = {}
 })
 
--- Custom method for imports 
+-- Custom method for imports
 function org_imports()
     vim.lsp.buf.format()
     local clients = vim.lsp.buf_get_clients()
@@ -227,3 +213,8 @@ require("toggleterm").setup {
     size = 90,
     open_mapping = [[<leader>tt]]
 }
+
+-- WIND LINE
+--
+require('wlsample.bubble')
+require('gitsigns').setup()
