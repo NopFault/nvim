@@ -51,10 +51,8 @@ require("packer").startup(function(use)
     }
 end)
 
-
 -- KEYMAPS
 --
-vim.keymap.set("i", "jj", "<Esc>")
 vim.keymap.set('n', '<Leader>ff', ':Ex<CR>')
 
 local builtin = require('telescope.builtin')
@@ -77,8 +75,9 @@ vim.keymap.set("n", "<leader>g", ":LazyGit<CR>", opts)
 
 vim.keymap.set("n", "<leader>sf", ":source %<CR>", opts)
 
-vim.keymap.set('n', '<C-t>', ':r! date "+\\%Y-\\%m-\\%d" <CR>', opts)
+vim.keymap.set("n", "<leader>tt", ":ToggleTerm size=90 direction=horizontal <CR>", opts)
 
+vim.keymap.set('n', '<C-t>', ':r! date "+\\%Y-\\%m-\\%d" <CR>', opts)
 
 
 -- BASIC CONFIG
@@ -94,6 +93,8 @@ o.background = "dark"
 
 o.number = true
 o.relativenumber = true
+
+o.timeoutlen = 500
 
 o.completeopt = 'menuone,noselect'
 
@@ -135,6 +136,7 @@ require 'nvim-treesitter.configs'.setup {
         enable = false,
     }
 }
+
 
 -- LSP
 --
@@ -180,7 +182,6 @@ lsp.on_attach(function(client, bufnr)
     vim.keymap.set('n', "[d", function() vim.diagnostic.goto_next() end, opts)
     vim.keymap.set('n', "]d", function() vim.diagnostic.goto_prev() end, opts)
     vim.keymap.set('n', "<C-f>", function() org_imports() end, opts)
-    vim.keymap.set('i', "<C-f>", function() org_imports() end, opts)
 end)
 
 lsp.setup()
@@ -208,11 +209,8 @@ require('telescope').load_extension('lazygit')
 
 -- TERMINAL SETUP
 --
-require("toggleterm").setup {
-    direction = "horizontal",
-    size = 90,
-    open_mapping = [[<leader>tt]]
-}
+require("toggleterm").setup()
+
 
 -- WIND LINE
 --
