@@ -9,6 +9,7 @@ require("packer").startup(function(use)
     use {
         'nvim-telescope/telescope.nvim', tag = '0.1.1',
         requires = { { 'nvim-lua/plenary.nvim' } }
+
     }
     use { "fatih/vim-go" }
     use {
@@ -43,16 +44,36 @@ require("packer").startup(function(use)
                 require("telescope").load_extension("lazygit")
             end,
         }),
-        use "windwp/windline.nvim",
         use { "akinsho/toggleterm.nvim", tag = '*' },
         use { 'akinsho/bufferline.nvim', tag = '*' },
         use "terrortylor/nvim-comment",
         use "lewis6991/gitsigns.nvim",
-
+        use {
+            'nvim-lualine/lualine.nvim',
+            requires = { 'nvim-tree/nvim-web-devicons', opt = true }
+        },
         use {
             "windwp/nvim-autopairs",
             config = function() require("nvim-autopairs").setup {} end
         }
+    }
+
+    -- Requires Spotify-tui (https://github.com/Rigellute/spotify-tui)
+    use {
+        'KadoBOT/nvim-spotify',
+        requires = 'nvim-telescope/telescope.nvim',
+        config = function()
+            local spotify = require 'nvim-spotify'
+
+            spotify.setup {
+                -- default opts
+                status = {
+                    update_interval = 10000, -- the interval (ms) to check for what's currently playing
+                    format = '%s %t by %a'   -- spotify-tui --format argument
+                }
+            }
+        end,
+        run = 'make'
     }
 end)
 
@@ -84,6 +105,14 @@ vim.keymap.set("n", "<leader>tt", ":ToggleTerm size=90 direction=horizontal <CR>
 
 vim.keymap.set('n', '<C-t>', ':r! date "+\\%Y-\\%m-\\%d" <CR>', opts)
 
+
+vim.api.nvim_set_keymap("n", "<leader>mn", "<Plug>(SpotifySkip)", { silent = true })    -- Skip the current track
+vim.api.nvim_set_keymap("n", "<leader>mp", "<Plug>(SpotifyPause)", { silent = true })   -- Pause/Resume the current track
+vim.api.nvim_set_keymap("n", "<leader>ms", "<Plug>(SpotifySave)", { silent = true })    -- Add the current track to your library
+vim.api.nvim_set_keymap("n", "<leader>mo", ":Spotify<CR>", { silent = true })           -- Open Spotify Search window
+vim.api.nvim_set_keymap("n", "<leader>md", ":SpotifyDevices<CR>", { silent = true })    -- Open Spotify Devices window
+vim.api.nvim_set_keymap("n", "<leader>mb", "<Plug>(SpotifyPrev)", { silent = true })    -- Go back to the previous track
+vim.api.nvim_set_keymap("n", "<leader>mh", "<Plug>(SpotifyShuffle)", { silent = true }) -- Toggles shuffle mode
 
 -- BASIC CONFIG
 --
@@ -217,10 +246,23 @@ require('telescope').load_extension('lazygit')
 require("toggleterm").setup()
 
 
--- WIND LINE
+-- LUA LINE
 --
-require('wlsample.bubble')
+require('lualine').setup()
 require('gitsigns').setup()
+-- display spotify info in lua LINE
+local status = require'nvim-spotify'.status
+
+status:start()
+
+require('lualine').setup {
+    sections = {
+        lualine_x = {
+            status.listen
+        }
+    }
+}
+
 
 -- AUTOPAIRS
 --
