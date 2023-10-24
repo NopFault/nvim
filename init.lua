@@ -48,6 +48,11 @@ require("packer").startup(function(use)
         use { 'akinsho/bufferline.nvim', tag = '*' },
         use "terrortylor/nvim-comment",
         use "lewis6991/gitsigns.nvim",
+
+        use {
+            "windwp/nvim-autopairs",
+            config = function() require("nvim-autopairs").setup {} end
+        }
     }
 end)
 
@@ -216,3 +221,9 @@ require("toggleterm").setup()
 --
 require('wlsample.bubble')
 require('gitsigns').setup()
+
+-- AUTOPAIRS
+--
+require('nvim-autopairs').setup({
+    disable_filetype = { "TelescopePrompt", "vim" },
+})
