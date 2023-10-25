@@ -57,24 +57,6 @@ require("packer").startup(function(use)
             config = function() require("nvim-autopairs").setup {} end
         }
     }
-
-    -- Requires Spotify-tui (https://github.com/Rigellute/spotify-tui)
-    use {
-        'KadoBOT/nvim-spotify',
-        requires = 'nvim-telescope/telescope.nvim',
-        config = function()
-            local spotify = require 'nvim-spotify'
-
-            spotify.setup {
-                -- default opts
-                status = {
-                    update_interval = 10000, -- the interval (ms) to check for what's currently playing
-                    format = '%s %t by %a'   -- spotify-tui --format argument
-                }
-            }
-        end,
-        run = 'make'
-    }
 end)
 
 -- KEYMAPS
@@ -250,18 +232,6 @@ require("toggleterm").setup()
 --
 require('lualine').setup()
 require('gitsigns').setup()
--- display spotify info in lua LINE
-local status = require'nvim-spotify'.status
-
-status:start()
-
-require('lualine').setup {
-    sections = {
-        lualine_x = {
-            status.listen
-        }
-    }
-}
 
 
 -- AUTOPAIRS
