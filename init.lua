@@ -1,4 +1,6 @@
 print("NopFault! Keep Coding")
+-- for this vuejs shit to work you need new node.
+-- with 14 it doesnt work with 21 it works so `npm install -g node`
 
 vim.g.mapleader = " "
 vim.g.maplocalleader = ' '
