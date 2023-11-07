@@ -56,6 +56,7 @@ require("packer").startup(function(use)
         },
         use 'feline-nvim/feline.nvim',
         use 'nvim-tree/nvim-web-devicons',
+        use 'airblade/vim-gitgutter',
     }
 end)
 
@@ -232,6 +233,8 @@ require("toggleterm").setup()
 
 -- FELINE
 --
+
+require('gitsigns').setup()
 
 local one_monokai = {
 	fg = "#abb2bf",
@@ -445,11 +448,6 @@ local right = {
 
 local components = {
 	active = {
-		left,
-		middle,
-		right,
-	},
-	inactive = {
 		left,
 		middle,
 		right,
