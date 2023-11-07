@@ -51,20 +51,11 @@ require("packer").startup(function(use)
         use "terrortylor/nvim-comment",
         use "lewis6991/gitsigns.nvim",
         use {
-            'nvim-lualine/lualine.nvim',
-            requires = { 'nvim-tree/nvim-web-devicons', opt = true }
-        },
-        use {
             "windwp/nvim-autopairs",
             config = function() require("nvim-autopairs").setup {} end
         },
-        use {
-            "rawnly/gist.nvim",
-            config = function() require("gist").setup() end,
-            -- `GistsList` opens the selected gif in a terminal buffer,
-            -- this plugin uses neovim remote rpc functionality to open the gist in an actual buffer and not have buffer inception
-            requires = { "samjwill/nvim-unception", setup = function() vim.g.unception_block_while_host_edits = true end }
-        },
+        use 'feline-nvim/feline.nvim',
+        use 'nvim-tree/nvim-web-devicons',
     }
 end)
 
@@ -81,7 +72,8 @@ vim.keymap.set("n", "<C-k>", ":m .-2<CR>==", opts)
 vim.keymap.set("v", "<C-j>", ":m '>+1<CR>gv=gv", opts)
 vim.keymap.set("v", "<C-k>", ":m '<-2<CR>gv=gv", opts)
 
-vim.keymap.set("n", "<leader>nn", ":e /Users/nopfault/Library/Mobile Documents/iCloud~md~obsidian/Documents/<CR>", opts)
+vim.keymap.set("n", "<leader>nn",
+    ":e /Users/nopfault/Library/Mobile Documents/iCloud~md~obsidian/Documents/NopFault/<CR>", opts)
 
 vim.keymap.set('n', '<C-h>', ':bprev<CR>', opts)
 vim.keymap.set('n', '<C-l>', ':bnext<CR>', opts)
@@ -130,8 +122,10 @@ o.foldmethod = 'expr'
 o.foldexpr = 'nvim_treesitter#foldexpr()'
 
 
--- BUFFERS
+vim.cmd[[autocmd BufWritePost *.swift :silent exec "!swiftformat %"]]
+
 --
+-- BUFFERS
 vim.opt.termguicolors = true
 require("bufferline").setup {}
 
@@ -222,7 +216,7 @@ vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(
 -- COMMENT
 --
 require("nvim_comment").setup({
-    operator_mapping = "<leader>c"
+    operator_mapping = "<leader>/"
 })
 
 
@@ -236,48 +230,240 @@ require('telescope').load_extension('lazygit')
 require("toggleterm").setup()
 
 
--- LUA LINE
+-- FELINE
 --
-local spotifyArtist = function()
-    --return vim.fn.system{'pwd'}
-    local call = vim.fn.system
-    local val = call(
-        [[
-    osascript /Users/nopfault/dev/applescript/spt.applescript | jq -r ".artist,.name" | sed -e "N;s/\n/ - /"
-    ]]
-    )
 
-    return val
-end
+local one_monokai = {
+	fg = "#abb2bf",
+	bg = "#1e2024",
+	green = "#98c379",
+	yellow = "#e5c07b",
+	purple = "#c678dd",
+	orange = "#d19a66",
+	peanut = "#f6d5a4",
+	red = "#e06c75",
+	aqua = "#61afef",
+	darkblue = "#282c34",
+	dark_red = "#f75f5f",
+}
 
-require('lualine').setup({
-    --    sections = {
-    --        lualine_c = {
-    --            { spotifyArtist, timeout=10000 }
-    --        }
-    --    }
+local vi_mode_colors = {
+	NORMAL = "green",
+	OP = "green",
+	INSERT = "yellow",
+	VISUAL = "purple",
+	LINES = "orange",
+	BLOCK = "dark_red",
+	REPLACE = "red",
+	COMMAND = "aqua",
+}
+
+local c = {
+	vim_mode = {
+		provider = {
+			name = "vi_mode",
+			opts = {
+				show_mode_name = true,
+				-- padding = "center", -- Uncomment for extra padding.
+			},
+		},
+		hl = function()
+			return {
+				fg = require("feline.providers.vi_mode").get_mode_color(),
+				bg = "darkblue",
+				style = "bold",
+				name = "NeovimModeHLColor",
+			}
+		end,
+		left_sep = "block",
+		right_sep = "block",
+	},
+	gitBranch = {
+		provider = "git_branch",
+		hl = {
+			fg = "peanut",
+			bg = "darkblue",
+			style = "bold",
+		},
+		left_sep = "block",
+		right_sep = "block",
+	},
+	gitDiffAdded = {
+		provider = "git_diff_added",
+		hl = {
+			fg = "green",
+			bg = "darkblue",
+		},
+		left_sep = "block",
+		right_sep = "block",
+	},
+	gitDiffRemoved = {
+		provider = "git_diff_removed",
+		hl = {
+			fg = "red",
+			bg = "darkblue",
+		},
+		left_sep = "block",
+		right_sep = "block",
+	},
+	gitDiffChanged = {
+		provider = "git_diff_changed",
+		hl = {
+			fg = "fg",
+			bg = "darkblue",
+		},
+		left_sep = "block",
+		right_sep = "right_filled",
+	},
+	separator = {
+		provider = "",
+	},
+	fileinfo = {
+		provider = {
+			name = "file_info",
+			opts = {
+				type = "relative-short",
+			},
+		},
+		hl = {
+			style = "bold",
+		},
+		left_sep = " ",
+		right_sep = " ",
+	},
+	diagnostic_errors = {
+		provider = "diagnostic_errors",
+		hl = {
+			fg = "red",
+		},
+	},
+	diagnostic_warnings = {
+		provider = "diagnostic_warnings",
+		hl = {
+			fg = "yellow",
+		},
+	},
+	diagnostic_hints = {
+		provider = "diagnostic_hints",
+		hl = {
+			fg = "aqua",
+		},
+	},
+	diagnostic_info = {
+		provider = "diagnostic_info",
+	},
+	lsp_client_names = {
+		provider = "lsp_client_names",
+		hl = {
+			fg = "purple",
+			bg = "darkblue",
+			style = "bold",
+		},
+		left_sep = "left_filled",
+		right_sep = "block",
+	},
+	file_type = {
+		provider = {
+			name = "file_type",
+			opts = {
+				filetype_icon = true,
+				case = "titlecase",
+			},
+		},
+		hl = {
+			fg = "red",
+			bg = "darkblue",
+			style = "bold",
+		},
+		left_sep = "block",
+		right_sep = "block",
+	},
+	file_encoding = {
+		provider = "file_encoding",
+		hl = {
+			fg = "orange",
+			bg = "darkblue",
+			style = "italic",
+		},
+		left_sep = "block",
+		right_sep = "block",
+	},
+	position = {
+		provider = "position",
+		hl = {
+			fg = "green",
+			bg = "darkblue",
+			style = "bold",
+		},
+		left_sep = "block",
+		right_sep = "block",
+	},
+	line_percentage = {
+		provider = "line_percentage",
+		hl = {
+			fg = "aqua",
+			bg = "darkblue",
+			style = "bold",
+		},
+		left_sep = "block",
+		right_sep = "block",
+	},
+	scroll_bar = {
+		provider = "scroll_bar",
+		hl = {
+			fg = "yellow",
+			style = "bold",
+		},
+	},
+}
+
+local left = {
+	c.vim_mode,
+	c.gitBranch,
+	c.gitDiffAdded,
+  c.gitDiffRemoved,
+	c.gitDiffChanged,
+	c.separator,
+}
+
+local middle = {
+	c.fileinfo,
+	c.diagnostic_errors,
+	c.diagnostic_warnings,
+	c.diagnostic_info,
+	c.diagnostic_hints,
+}
+
+local right = {
+	c.lsp_client_names,
+	c.file_type,
+	c.file_encoding,
+	c.position,
+	c.line_percentage,
+	c.scroll_bar,
+}
+
+local components = {
+	active = {
+		left,
+		middle,
+		right,
+	},
+	inactive = {
+		left,
+		middle,
+		right,
+	},
+}
+
+require('feline').setup({
+	components = components,
+	theme = one_monokai,
+	vi_mode_colors = vi_mode_colors,
 })
-require('gitsigns').setup()
-
 
 -- AUTOPAIRS
 --
 require('nvim-autopairs').setup({
     disable_filetype = { "TelescopePrompt", "vim" },
-})
-
-
--- GISTS
---
-require("gist").setup({
-    private = false, -- All gists will be private, you won't be prompted again
-    clipboard = "+", -- The registry to use for copying the Gist URL
-    list = {
-        -- If there are multiple files in a gist you can scroll them,
-        -- with vim-like bindings n/p next previous
-        mappings = {
-            next_file = "<C-n>",
-            prev_file = "<C-p>"
-        }
-    }
 })
