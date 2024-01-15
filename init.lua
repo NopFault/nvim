@@ -59,6 +59,23 @@ require("packer").startup(function(use)
         use 'airblade/vim-gitgutter',
         use "lukas-reineke/indent-blankline.nvim",
         use 'arminveres/md-pdf.nvim',
+        use 'rcarriga/nvim-notify',
+        use 'jwalton512/vim-blade',
+        use 'tpope/vim-dispatch',
+        use 'tpope/vim-projectionist',
+        use 'noahfrederick/vim-composer',
+        use 'noahfrederick/vim-laravel',
+        use({
+            "gbprod/phpactor.nvim",
+            run = require("phpactor.handler.update"), -- To install/update phpactor when installing this plugin
+            config = function()
+                require("phpactor").setup({
+                    -- your configuration comes here
+                    -- or leave it empty to use the default settings
+                    -- refer to the configuration section below
+                })
+            end
+        })
     }
 end)
 
@@ -76,7 +93,7 @@ vim.keymap.set("v", "<C-j>", ":m '>+1<CR>gv=gv", opts)
 vim.keymap.set("v", "<C-k>", ":m '<-2<CR>gv=gv", opts)
 
 vim.keymap.set("n", "<leader>nn",
-    ":e /Users/nopfault/Library/Mobile Documents/iCloud~md~obsidian/Documents/NopFault/<CR>", opts)
+    ":e /Users/lazymonad/Library/Mobile Documents/iCloud~md~obsidian/Documents/NopFault/<CR>", opts)
 
 vim.keymap.set('n', '<C-h>', ':bprev<CR>', opts)
 vim.keymap.set('n', '<C-l>', ':bnext<CR>', opts)
@@ -97,7 +114,7 @@ vim.keymap.set('n', "[d", function() vim.diagnostic.goto_next() end, opts)
 vim.keymap.set('n', "]d", function() vim.diagnostic.goto_prev() end, opts)
 vim.keymap.set('n', "<C-f>", function() code_format() end, opts)
 
--- MD to PDF 
+-- MD to PDF
 vim.keymap.set("n", "<leader>zz", function()
     require('md-pdf').convert_md_to_pdf()
 end)
@@ -202,6 +219,7 @@ lsp.ensure_installed({
     "lua_ls",
     "eslint",
     "zls",
+    "phpactor",
 })
 
 require("mason").setup()
@@ -236,6 +254,8 @@ end
 --lsp.on_attach(function(client, bufnr)
 local opts = { buffer = bufnr, remap = false }
 --end)
+
+
 
 lsp.setup({})
 
@@ -503,9 +523,10 @@ require('nvim-autopairs').setup({
 -- *.md to pdf
 --
 require('md-pdf').setup({
-  --- Set margins around document
-  margins = "1.5cm",
-  --- tango, pygments are quite nice for white on white
-  highlight = "tango",
+    --- Set margins around document
+    margins = "1.5cm",
+    --- tango, pygments are quite nice for white on white
+    highlight = "tango",
 })
 
+require("notify").setup({})
