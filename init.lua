@@ -65,17 +65,6 @@ require("packer").startup(function(use)
         use 'tpope/vim-projectionist',
         use 'noahfrederick/vim-composer',
         use 'noahfrederick/vim-laravel',
-        use({
-            "gbprod/phpactor.nvim",
-            run = require("phpactor.handler.update"), -- To install/update phpactor when installing this plugin
-            config = function()
-                require("phpactor").setup({
-                    -- your configuration comes here
-                    -- or leave it empty to use the default settings
-                    -- refer to the configuration section below
-                })
-            end
-        })
     }
 end)
 
@@ -219,7 +208,6 @@ lsp.ensure_installed({
     "lua_ls",
     "eslint",
     "zls",
-    "phpactor",
 })
 
 require("mason").setup()
