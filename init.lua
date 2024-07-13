@@ -181,15 +181,7 @@ require('lazy').setup({
     },
   },
 
-  {
-    "folke/tokyonight.nvim",
-    lazy = false,    -- make sure we load this during startup if it is your main colorscheme
-    priority = 1000, -- make sure to load this before all the other start plugins
-    config = function()
-      -- load the colorscheme here
-      vim.cmd([[colorscheme tokyonight-storm]])
-    end,
-  },
+  { "catppuccin/nvim",       name = "catppuccin", priority = 1000 },
 
   {
     -- Set lualine as statusline
@@ -197,8 +189,8 @@ require('lazy').setup({
     -- See `:help lualine.txt`
     opts = {
       options = {
-        icons_enabled = false,
-        theme = 'auto',
+        icons_enabled = true,
+        theme = 'catppuccin',
         scope = { enabled = true },
         component_separators = '|',
         section_separators = '',
@@ -273,6 +265,7 @@ vim.o.expandtab = true
 vim.o.softtabstop = 4
 vim.o.shiftwidth = 4
 
+vim.cmd.colorscheme "catppuccin"
 
 -- BASIC Keys
 --
@@ -529,7 +522,7 @@ local on_attach = function(client, bufnr)
   nmap('gI', require('telescope.builtin').lsp_implementations, '[G]oto [I]mplementation')
   nmap('<leader>D', require('telescope.builtin').lsp_type_definitions, 'Type [D]efinition')
   nmap('<leader>ds', require('telescope.builtin').lsp_document_symbols, '[D]ocument [S]ymbols')
-  nmap('<leader>ws', require('telescope.builtin').l / sp_dynamic_workspace_symbols, '[W]orkspace [S]ymbols')
+  nmap('<leader>ws', require('telescope.builtin').lsp_dynamic_workspace_symbols, '[W]orkspace [S]ymbols')
 
   -- See `:help K` for why this keymap
   nmap('K', vim.lsp.buf.hover, 'Hover Documentation')
@@ -864,6 +857,8 @@ local opts = {
     },
   },
 }
+
+
 
 require('rust-tools').setup(opts)
 
